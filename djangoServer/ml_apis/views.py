@@ -29,4 +29,16 @@ def imagePredict(request):
     # print(gotDataDic,type(gotDataDic))
     workspace = modelSelector.ModelSelector(1)
     retRes = workspace.ImageAnnotor(gotDataDic['imageUrl'],gotDataDic['imageType'])
-    return Response("my name is Aditya")
+    return Response(json.dumps(retRes))
+
+@api_view(['POST'])
+def numberPredict(request):
+    gotDataDic = json.loads(request.body.decode("utf-8"))
+    # print(gotDataDic,type(gotDataDic))
+    workspace = modelSelector.ModelSelector(1)
+    retRes = workspace.vehicleNumberReturn(gotDataDic['imageUrl'],gotDataDic['imageType'])
+    print(retRes)
+    return Response(json.dumps(retRes))
+
+def videoPredict(request):
+    return Response("my name is Aditya") 
