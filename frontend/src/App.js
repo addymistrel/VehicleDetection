@@ -7,6 +7,7 @@ function App() {
   const djangoUrl = "http://127.0.0.1:8000/";
   const [imageUrl, setUrl] = useState("");
   const [imageType, setType] = useState("");
+  const [predicted, setPredict] = useState("");
 
   function handleChange(e) {
     const fr = new FileReader();
@@ -31,30 +32,42 @@ function App() {
   console.log("image uploaded");
   console.log(imageType);
 
-  const handleClick = async () => {
-    const resData = await axios
-      .post(djangoUrl + "imgpredict/", {
-        imageUrl: imageUrl,
-        imageType: imageType,
-      })
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
+  const handleClick = async (para) => {
+    if (para === 1) {
+      const resData = await axios
+        .post(djangoUrl + "imgpredict/", {
+          imageUrl: imageUrl,
+          imageType: imageType,
+        })
+        .then((res) => {
+          console.log(JSON.parse(res.data));
+          setPredict(JSON.parse(res.data)[0]);
+        })
+        .catch((err) => console.log(err));
+    } else if (para === 2) {
+      const resData = await axios
+        .post(djangoUrl + "numberPredict/", {
+          imageUrl: imageUrl,
+          imageType: imageType,
+        })
+        .then((res) => {
+          console.log(JSON.parse(res.data));
+          // setPredict(JSON.parse(res.data)[0]);
+        })
+        .catch((err) => console.log(err));
+    }
   };
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-
+        {predicted && <img src={predicted} alt="predicted image" />}
         <input
           type="file"
           id="images"
           accept="image/*"
           onChange={(e) => handleChange(e)}
         />
-        <button onClick={handleClick}>Submit</button>
+        <button onClick={() => handleClick(2)}>Submit</button>
       </header>
     </div>
   );

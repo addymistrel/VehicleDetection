@@ -241,10 +241,10 @@ class ModelSelector:
 
 
         # load a pre-trained yolov8n model
-        model = self.imgModel
+        modelimg = self.imgModel
 
         # run inference on our chosen image, image can be a url, a numpy array, a PIL image, etc.
-        results = model.infer(image)
+        results = modelimg.infer(image)
 
         # load the results into the supervision Detections api
         detections = sv.Detections.from_roboflow(results[0].dict(by_alias=True, exclude_none=True))
@@ -260,10 +260,7 @@ class ModelSelector:
             scene=annotated_image, detections=detections)
 
         # display the image
-        sv.plot_image(annotated_image)
-
-        if os.path.isfile(imgName):
-            os.remove(imgName)
+        # sv.plot_image(annotated_image)
 
         cv2.imwrite("annnot.jpg", annotated_image)
         print("i am here")
@@ -272,10 +269,25 @@ class ModelSelector:
         image_file.close()
         base64_encoded = base64.b64encode(image_binary).decode('utf-8')
         print(base64_encoded)
+
+        data_url = f"data:image/jpeg;base64,{base64_encoded}"
         # if os.path.isfile("annnot.jpg"):
         #     os.remove("annnot.jpg")
+        data = self.noRetModel.predict(imgName, confidence=40, overlap=30).json()
+
+        vehicle = 0
+        invalid = 0
+        for k in data['predictions']:
+            if k['class'] == 'Vehicle':
+                vehicle+=1
+            elif k['class'] == 'invalid':
+                invalid+=1
+        print("Actual Vehicles = {}...Invalid Vehicles = {}".format(vehicle,invalid))
+
+        if os.path.isfile(imgName):
+            os.remove(imgName)
             
-        return base64_encoded
+        return data_url,vehicle,invalid
 
         
     def VideoandLiveAnnotor(self):
@@ -299,7 +311,7 @@ class ModelSelector:
         img = Image.open(io.BytesIO(base64.decodebytes(bytes(imageString, "utf-8"))))
         imgName = "server."+imgType
         img.save(imgName)
-        data = model.predict(imgName, confidence=40, overlap=30).json()
+        data = self.noRetModel.predict(imgName, confidence=40, overlap=30).json()
 
         vehicle = 0
         invalid = 0
