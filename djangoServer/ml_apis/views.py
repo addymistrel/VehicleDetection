@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import json
 from . import costGenerator
+from . import modelSelector
 import pickle
 # model = pickle.load(open('model.pkl','rb'))
 
@@ -23,13 +24,9 @@ def newData(request):
     return Response(json.dumps(returnData))
 
 @api_view(['POST'])
-def mloutput(request):
+def imagePredict(request):
     gotDataDic = json.loads(request.body.decode("utf-8"))
-    print(gotDataDic,type(gotDataDic))
-    return Response(json.dumps(gotDataDic))
-    # x = model.predict([[x1,x2,x3]])[0][0]
-    # # st.subheader(x)0
-    # if x > 0.51514834:
-    #     print(1)
-    # else:
-    #     print(2)
+    # print(gotDataDic,type(gotDataDic))
+    workspace = modelSelector.ModelSelector(1)
+    retRes = workspace.ImageAnnotor(gotDataDic['imageUrl'],gotDataDic['imageType'])
+    return Response("my name is Aditya")

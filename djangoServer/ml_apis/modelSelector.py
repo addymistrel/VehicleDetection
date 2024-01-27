@@ -149,23 +149,25 @@ project = rf.workspace().project("test-2-g3mkp")
 # detect_objects(image_path)
 
 # print()
-livemodel = get_roboflow_model(model_id="test-2-g3mkp/18")
+livemodel = get_roboflow_model(model_id="test-2-g3mkp/18",api_key="ZL1FPZ5KWA67VOUO9Pzx")
 # print("Total Weight Fulfilled = ",initCap)
 # print("Total cost Expend = ",totalCost)
 import numpy as np
 import cv2
 import pafy
 import time
+import torch
 
 
 class ObjectDetection:
     #Yolov5 model using open cv
     
     def __init__(self):
+
         self.model = project.version(18).model
         self.classes = ['Vehicle','invalid']
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        print("\n\nDevice Used:",self.device)
+        # self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        # print("\n\nDevice Used:",self.device)
     
     def load_model(self):
         #loading a pretrained model
@@ -216,24 +218,30 @@ class ObjectDetection:
 
 
 class ModelSelector:
-    def __init__(self,modelNumber,imageString):
+    def __init__(self,modelNumber):
         self.modelNumber = modelNumber
-        self.imageString = imageString
         self.noRetModel = ObjectDetection().model
         self.imgModel = livemodel
 
-    def ImageAnnotor():
+    def ImageAnnotor(self,imageString,imgType):
+        import io, base64,os
+        from PIL import Image
+
+        # Assuming base64_str is the string value without 'data:image/jpeg;base64,'
+        img = Image.open(io.BytesIO(base64.decodebytes(bytes(imageString, "utf-8"))))
+        imgName = "server."+imgType
+        img.save(imgName)
         import supervision as sv
         # import cv2 to helo load our image
         import cv2
 
         # define the image url to use for inference
-        image_file = "test_image.png"
+        image_file = imgName
         image = cv2.imread(image_file)
 
 
         # load a pre-trained yolov8n model
-        model = get_roboflow_model(model_id="test-2-g3mkp/18")
+        model = self.imgModel
 
         # run inference on our chosen image, image can be a url, a numpy array, a PIL image, etc.
         results = model.infer(image)
@@ -253,8 +261,24 @@ class ModelSelector:
 
         # display the image
         sv.plot_image(annotated_image)
+
+        if os.path.isfile(imgName):
+            os.remove(imgName)
+
+        cv2.imwrite("annnot.jpg", annotated_image)
+        print("i am here")
+        image_file = open("annnot.jpg", "rb")
+        image_binary = image_file.read()
+        image_file.close()
+        base64_encoded = base64.b64encode(image_binary).decode('utf-8')
+        print(base64_encoded)
+        # if os.path.isfile("annnot.jpg"):
+        #     os.remove("annnot.jpg")
+            
+        return base64_encoded
+
         
-    def VideoandLiveAnnotor():
+    def VideoandLiveAnnotor(self):
         from inference import InferencePipeline
         # Import the built-in render_boxes sink for visualizing results
         from inference.core.interfaces.stream.sinks import render_boxes
@@ -267,4 +291,25 @@ class ModelSelector:
         pipeline.start()
         pipeline.join()
 
-    def vehicleNumberReturn():
+    def vehicleNumberReturn(self,imageString,imgType):
+        import io, base64,os
+        from PIL import Image
+
+        # Assuming base64_str is the string value without 'data:image/jpeg;base64,'
+        img = Image.open(io.BytesIO(base64.decodebytes(bytes(imageString, "utf-8"))))
+        imgName = "server."+imgType
+        img.save(imgName)
+        data = model.predict(imgName, confidence=40, overlap=30).json()
+
+        vehicle = 0
+        invalid = 0
+        for k in data['predictions']:
+            if k['class'] == 'Vehicle':
+                vehicle+=1
+            elif k['class'] == 'invalid':
+                invalid+=1
+        print("Actual Vehicles = {}...Invalid Vehicles = {}".format(vehicle,invalid))
+
+        if os.path.isfile(imgName):
+            os.remove(imgName)
+        return vehicle,invalid
