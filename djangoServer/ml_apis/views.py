@@ -41,4 +41,6 @@ def numberPredict(request):
     return Response(json.dumps(retRes))
 
 def videoPredict(request):
+    workspace = modelSelector.ModelSelector(1)
+    workspace.VideoandLiveAnnotor()
     return Response("my name is Aditya") 
