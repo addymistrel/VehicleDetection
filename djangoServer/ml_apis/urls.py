@@ -6,5 +6,6 @@ urlpatterns = [
     path('', views.getData),
     path('getRoute/', views.newData),
     path('imgpredict/', views.imagePredict),
-    path('numberPredict/', views.numberPredict)
+    path('numberPredict/', views.numberPredict),
+    path('videoPredict/',views.videoPredict)
 ]

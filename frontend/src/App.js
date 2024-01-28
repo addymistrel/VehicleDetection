@@ -67,7 +67,7 @@ function App() {
           accept="image/*"
           onChange={(e) => handleChange(e)}
         />
-        <button onClick={() => handleClick(2)}>Submit</button>
+        <button onClick={() => handleClick(3)}>Submit</button>
       </header>
     </div>
   );
