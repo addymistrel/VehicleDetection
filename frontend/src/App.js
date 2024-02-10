@@ -3,6 +3,7 @@ import "./App.css";
 import axios from "axios";
 import { useState } from "react";
 import CameraComponent from "./cameraComponent";
+import Home from "./screen/Home";
 
 function App() {
   const djangoUrl = "http://127.0.0.1:8000/";
@@ -60,7 +61,7 @@ function App() {
   };
   return (
     <>
-      <div className="App" style={{ display: "none" }}>
+      {/* <div className="App" style={{ display: "none" }}>
         <header className="App-header">
           {predicted && <img src={predicted} alt="predicted image" />}
           <input
@@ -76,7 +77,11 @@ function App() {
       <div>
         <h1>Live Vehicle Detector on live video frames</h1>
         <CameraComponent />
-      </div>
+      </div> */}
+
+
+      {/* <Home/> */}
+      
     </>
   );
 }
