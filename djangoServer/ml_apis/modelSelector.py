@@ -271,8 +271,8 @@ class ModelSelector:
         print(base64_encoded)
 
         data_url = f"data:image/jpeg;base64,{base64_encoded}"
-        # if os.path.isfile("annnot.jpg"):
-        #     os.remove("annnot.jpg")
+        if os.path.isfile("annnot.jpg"):
+            os.remove("annnot.jpg")
         data = self.noRetModel.predict(imgName, confidence=40, overlap=30).json()
 
         vehicle = 0
