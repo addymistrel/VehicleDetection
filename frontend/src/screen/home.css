@@ -41,6 +41,7 @@
   border-radius: 30px;
   width: 150px;
   height: 60px;
+  margin-top: 39px;
 }
 
 .rounded-full {
@@ -59,18 +60,29 @@
   width: 65px;
   height: 150px;
   margin-right: -43px;
-  margin-left: -423px;
+  margin-left: -190px;
 }
 .third-second-second {
   border-radius: 35px;
   width: 65px;
   height: 150px;
   margin-left: -32px;
-  margin-right: -401px;
+  margin-right: -190px;
 }
 .helo-helo-helo-helo {
   border-radius: 30px;
   width: 150px;
   height: 60px;
-  margin-top: -43px;
+  margin-top: -39px;
+}
+
+
+.hello-hello-hello-lower {
+  height: auto;
+  background-color: rgba(0, 0, 0, 0);
+  margin-top: 105px;
+}
+
+.hel-xx-lx{
+  margin-top: 190px;
 }

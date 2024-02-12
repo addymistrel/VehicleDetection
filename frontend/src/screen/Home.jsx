@@ -86,7 +86,7 @@ export default function Home() {
   console.log(selectedCamera);
   return (
     <>
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between mb-6">
         <div className="w-1/2 p-4 text-white">
           <Webcam
             key={videoDevices[0] ? videoDevices[0].deviceId : null}
@@ -142,7 +142,7 @@ export default function Home() {
 
         <div className="w-1/4 p-4">
           <div className="flex justify-center items-center p-12">
-            <button className="text-white bg-red-500 rounded-xl p-4">
+            <button className="text-white bg-red-500 rounded-xl p-8 text-xl">
               Capture
             </button>
           </div>
@@ -160,6 +160,7 @@ export default function Home() {
         </div>
       </div>
 
+            {/* row 3rd */}
       <div className="flex justify-between mt-6">
         <div className="w-1/2 p-4 text-white">
           <Webcam
@@ -180,9 +181,9 @@ export default function Home() {
             <div className="h-7 w-7 bg-yellow-500 m-2 rounded-full"></div>
             <div className="h-7 w-7 bg-green-500 m-2 rounded-full"></div>
           </div>
-          <div className="p-2 hello-hello  mx-4 mt-6">
+          <div className="p-2 hello-hello-hello-lower  mx-4 mt-6">
             <div className="mx-auto mb-70 Hello-hello-hello">
-              <h1 className="bg-white text-5xl py-3 px-3">65</h1>
+              <h1 className="bg-white text-5xl py-3 px-3 hel-xx-lx">65</h1>
             </div>
           </div>
         </div>
