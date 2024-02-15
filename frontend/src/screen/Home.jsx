@@ -19,6 +19,47 @@ export default function Home() {
   const [predicted, setPredicted] = useState({});
   const [videoDevices, setVideoDevices] = useState([]);
   const [imgShow, setImgShow] = useState(false);
+  const red = "bg-red-500";
+  const yellow = "bg-yellow-500";
+  const green = "bg-green-500";
+  const black = "bg-black";
+  const [trafficLightColor, setTrafficLightColor] = useState({
+    1: { red: black, yellow: black, green: green },
+    2: { red: red, yellow: black, green: black },
+    3: { red: red, yellow: black, green: black },
+    4: { red: red, yellow: black, green: black },
+  });
+  const [trafficLightTimer, setTrafficLightTimer] = useState({
+    1: 5,
+    2: 5,
+    3: 5,
+    4: 5,
+  });
+
+  useEffect(() => {
+    if (
+      trafficLightTimer[1] !== 0 &&
+      trafficLightTimer[2] !== 0 &&
+      trafficLightTimer[3] !== 0 &&
+      trafficLightTimer[4] !== 0
+    ) {
+      setTimeout(() => {
+        setTrafficLightTimer({
+          1: trafficLightTimer[1] - 1,
+          2: trafficLightTimer[2] - 1,
+          3: trafficLightTimer[3] - 1,
+          4: trafficLightTimer[4] - 1,
+        });
+      }, 1000);
+    } else {
+      setTrafficLightTimer({
+        1: 5,
+        2: 5,
+        3: 5,
+        4: 5,
+      });
+    }
+  });
 
   const getVideoDevices = async () => {
     try {
@@ -148,13 +189,21 @@ export default function Home() {
         <div className="w-1/4 p-4 text-white flex-row hello-hello-2 mx-10">
           <div className="p-2 hello-hello  mx-4">
             <div className="mx-auto mt-40 Hello-hello-hello">
-              <h1 className="bg-white text-5xl py-3 px-3">65</h1>
+              <h1 className="bg-white text-5xl py-3 px-3">
+                {trafficLightTimer[1]}
+              </h1>
             </div>
           </div>
           <div className="mx-auto m-1 border h-20 w-15 helo-helo-helo bg-white flex p-2">
-            <div className="h-7 w-7 bg-red-500 m-2 rounded-full"></div>
-            <div className="h-7 w-7 bg-yellow-500 m-2 rounded-full"></div>
-            <div className="h-7 w-7 bg-green-500 m-2 rounded-full"></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[1].red} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[1].yellow} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[1].green} m-2 rounded-full`}
+            ></div>
           </div>
         </div>
 
@@ -200,13 +249,21 @@ export default function Home() {
       <div className="flex justify-between">
         <div className="w-1/2 p-4 text-white flex second-second mr-7">
           <div className="Hello-hello-hello mx-auto my-10">
-            <h1 className="bg-white text-5xl py-3 px-3">65</h1>
+            <h1 className="bg-white text-5xl py-3 px-3">
+              {trafficLightTimer[2]}
+            </h1>
           </div>
 
           <div className="my-auto m-1 border second-second-second bg-white flex-row justify-center p-1">
-            <div className="h-7 w-7 bg-red-500 m-3 rounded-full"></div>
-            <div className="h-7 w-7 bg-yellow-500 m-3 rounded-full"></div>
-            <div className="h-7 w-7 bg-green-500 m-3 rounded-full"></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].red} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].yellow} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].green} m-3 rounded-full`}
+            ></div>
           </div>
         </div>
 
@@ -223,12 +280,20 @@ export default function Home() {
 
         <div className="w-1/2 p-4 flex second-second mr-7">
           <div className="my-auto m-1 border third-second-second bg-white flex-row justify-center p-1">
-            <div className="h-7 w-7 bg-red-500 m-3 rounded-full"></div>
-            <div className="h-7 w-7 bg-yellow-500 m-3 rounded-full"></div>
-            <div className="h-7 w-7 bg-green-500 m-3 rounded-full"></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].red} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].yellow} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].green} m-3 rounded-full`}
+            ></div>
           </div>
           <div className="Hello-hello-hello mx-auto my-10">
-            <h1 className="bg-white text-5xl py-3 px-3">65</h1>
+            <h1 className="bg-white text-5xl py-3 px-3">
+              {trafficLightTimer[3]}
+            </h1>
           </div>
         </div>
       </div>
@@ -274,13 +339,21 @@ export default function Home() {
 
         <div className="w-1/4 p-4 text-white flex-row hello-hello-2 mx-10">
           <div className="mx-auto m-1 border h-20 w-15 helo-helo-helo-helo bg-white flex p-2">
-            <div className="h-7 w-7 bg-red-500 m-2 rounded-full"></div>
-            <div className="h-7 w-7 bg-yellow-500 m-2 rounded-full"></div>
-            <div className="h-7 w-7 bg-green-500 m-2 rounded-full"></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].red} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].yellow} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].green} m-2 rounded-full`}
+            ></div>
           </div>
           <div className="p-2 hello-hello  mx-4 mt-6">
             <div className="mx-auto mb-70 Hello-hello-hello">
-              <h1 className="bg-white text-5xl py-3 px-3">65</h1>
+              <h1 className="bg-white text-5xl py-3 px-3">
+                {trafficLightTimer[4]}
+              </h1>
             </div>
           </div>
         </div>
