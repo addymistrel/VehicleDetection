@@ -16,7 +16,7 @@ export default function Home() {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isPredicted, setIsPredicted] = useState(false);
   const [clickButton, setClickButton] = useState("Capture");
-  const [predicted, setPredicted] = useState("");
+  const [predicted, setPredicted] = useState({});
   const [videoDevices, setVideoDevices] = useState([]);
   const [imgShow, setImgShow] = useState(false);
 
@@ -69,36 +69,41 @@ export default function Home() {
     setClickButton("Predict");
   };
 
-  // const predict = async () => {
-  //   var imgType = "";
-  //   let ctr = 0;
-  //   var i = 0;
-  //   for (i = 0; capturedImage[i] !== ","; i++) {
-  //     if (capturedImage[i] === ";") ctr = 0;
-  //     if (ctr !== 0) imgType += capturedImage[i];
-  //     if (capturedImage[i] === "/") ctr = 1;
-  //   }
-  //   var imgUrl = capturedImage.substring(i + 1);
+  const predict = async () => {
+    setPredicted({});
+    let sendData = {};
+    for (const k in capturedImage) {
+      var imgType = "";
+      let ctr = 0;
+      var i = 0;
+      for (i = 0; capturedImage[k][i] !== ","; i++) {
+        if (capturedImage[k][i] === ";") ctr = 0;
+        if (ctr !== 0) imgType += capturedImage[k][i];
+        if (capturedImage[k][i] === "/") ctr = 1;
+      }
+      var imgUrl = capturedImage[k].substring(i + 1);
+      sendData[k] = { imageUrl: imgUrl, imageType: imgType };
+    }
+    console.log(sendData);
 
-  //   const resData = await axios
-  //     .post(djangoUrl + "imgpredict/", {
-  //       imageUrl: imgUrl,
-  //       imageType: imgType,
-  //     })
-  //     .then((res) => {
-  //       console.log(JSON.parse(res.data));
-  //       setPredicted(JSON.parse(res.data)[0]);
-  //       setIsPredicted(true);
-  //       setClickButton("Capture");
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-  const predict = () => {
-    setIsPredicted(true);
-    setClickButton("Capture");
-    setImgShow(false);
+    const resData = await axios
+      .post(djangoUrl + "imgpredict/", {
+        sendData,
+      })
+      .then((res) => {
+        console.log(JSON.parse(res.data));
+        setPredicted(JSON.parse(res.data));
+        setIsPredicted(true);
+        setClickButton("Capture");
+      })
+      .catch((err) => console.log(err));
   };
-  console.log(selectedCamera);
+  // const predict = () => {
+  //   setIsPredicted(true);
+  //   setClickButton("Capture");
+  //   setImgShow(false);
+  // };
+  // console.log(selectedCamera);
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -127,7 +132,14 @@ export default function Home() {
                 paddingLeft: "8rem",
                 paddingRight: "8rem",
               }}
-              src={capturedImage[1]}
+              src={
+                isPredicted === false
+                  ? capturedImage[1]
+                  : predicted[1].actualVehicles !== 0 ||
+                    predicted.invalidVehicles !== 0
+                  ? predicted[1].predictedUrl
+                  : capturedImage[4]
+              }
               alt="1st camera"
             />
           )}
@@ -171,7 +183,14 @@ export default function Home() {
                 paddingLeft: "8rem",
                 paddingRight: "8rem",
               }}
-              src={capturedImage[2]}
+              src={
+                isPredicted === false
+                  ? capturedImage[2]
+                  : predicted[2].actualVehicles !== 0 ||
+                    predicted.invalidVehicles !== 0
+                  ? predicted[2].predictedUrl
+                  : capturedImage[2]
+              }
               alt="2nd camera"
             />
           )}
@@ -240,7 +259,14 @@ export default function Home() {
                 paddingLeft: "8rem",
                 paddingRight: "8rem",
               }}
-              src={capturedImage[3]}
+              src={
+                isPredicted === false
+                  ? capturedImage[3]
+                  : predicted[3].actualVehicles !== 0 ||
+                    predicted.invalidVehicles !== 0
+                  ? predicted[3].predictedUrl
+                  : capturedImage[3]
+              }
               alt="3rd camera"
             />
           )}
@@ -284,7 +310,14 @@ export default function Home() {
                 paddingLeft: "8rem",
                 paddingRight: "8rem",
               }}
-              src={capturedImage[4]}
+              src={
+                isPredicted === false
+                  ? capturedImage[4]
+                  : predicted[4].actualVehicles !== 0 ||
+                    predicted.invalidVehicles !== 0
+                  ? predicted[4].predictedUrl
+                  : capturedImage[4]
+              }
               alt="4th camera"
             />
           )}

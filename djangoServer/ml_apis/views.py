@@ -26,10 +26,13 @@ def newData(request):
 @api_view(['POST'])
 def imagePredict(request):
     gotDataDic = json.loads(request.body.decode("utf-8"))
-    # print(gotDataDic,type(gotDataDic))
+    print(gotDataDic,type(gotDataDic))
     workspace = modelSelector.ModelSelector(1)
-    retRes = workspace.ImageAnnotor(gotDataDic['imageUrl'],gotDataDic['imageType'])
-    return Response(json.dumps(retRes))
+    finalRet = {}
+    for k in gotDataDic['sendData']:
+        retRes = workspace.ImageAnnotor(gotDataDic['sendData'][k]['imageUrl'],gotDataDic['sendData'][k]['imageType'])
+        finalRet[k] = {"predictedUrl":retRes[0],"actualVehicles":retRes[1],"invalidVehicles":retRes[2]}
+    return Response(json.dumps(finalRet))
 
 @api_view(['POST'])
 def numberPredict(request):
