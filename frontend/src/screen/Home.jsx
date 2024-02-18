@@ -253,12 +253,12 @@ export default function Home() {
         <div className="w-1/2 p-4 text-white">
           {imgShow === false ? (
             <Webcam
-              key={videoDevices[1] ? videoDevices[1].deviceId : null}
+              key={videoDevices[0] ? videoDevices[0].deviceId : null}
               audio={false}
               ref={(el) => (webcamRef1.current = el)}
               screenshotFormat="image/jpeg"
               videoConstraints={{
-                deviceId: videoDevices[1] ? videoDevices[1].deviceId : null,
+                deviceId: videoDevices[0] ? videoDevices[0].deviceId : null,
               }}
               style={{
                 width: "74rem",
