@@ -24,10 +24,10 @@ export default function Home() {
   const green = "bg-green-500";
   const black = "bg-black";
   const [trafficLightColor, setTrafficLightColor] = useState({
-    1: { red: black, yellow: black, green: green },
-    2: { red: red, yellow: black, green: black },
-    3: { red: red, yellow: black, green: black },
-    4: { red: red, yellow: black, green: black },
+    1: { red: black, yellow: black, green: black },
+    2: { red: black, yellow: black, green: black },
+    3: { red: black, yellow: black, green: black },
+    4: { red: black, yellow: black, green: black },
   });
   const [trafficLightTimer, setTrafficLightTimer] = useState({
     1: 5,
@@ -35,21 +35,121 @@ export default function Home() {
     3: 5,
     4: 5,
   });
+  const greenDic = { red: black, yellow: black, green: green };
+  const redDic = { red: red, yellow: black, green: black };
+  const yellowDic = { red: black, yellow: yellow, green: black };
+  const [presentActive, setPresentActive] = useState(1);
+  function yellowBlink() {
+    if (presentActive === 1) {
+      setTrafficLightColor((prev) => ({
+        ...prev,
+        1: yellowDic,
+        2: redDic,
+        3: redDic,
+        4: redDic,
+      }));
+      setTrafficLightTimer((prevData) => ({
+        ...prevData,
+        1: trafficLightTimer[1] - 1,
+      }));
+    } else if (presentActive === 2) {
+      setTrafficLightColor((prev) => ({
+        ...prev,
+        2: yellowDic,
+        1: redDic,
+        3: redDic,
+        4: redDic,
+      }));
+      setTrafficLightTimer((prevData) => ({
+        ...prevData,
+        2: trafficLightTimer[2] - 1,
+      }));
+    } else if (presentActive === 3) {
+      setTrafficLightColor((prev) => ({
+        ...prev,
+        3: yellowDic,
+        2: redDic,
+        1: redDic,
+        4: redDic,
+      }));
+      setTrafficLightTimer((prevData) => ({
+        ...prevData,
+        3: trafficLightTimer[3] - 1,
+      }));
+    } else if (presentActive === 4) {
+      setTrafficLightColor((prev) => ({
+        ...prev,
+        4: yellowDic,
+        2: redDic,
+        3: redDic,
+        1: redDic,
+      }));
+      setTrafficLightTimer((prevData) => ({
+        ...prevData,
+        4: trafficLightTimer[4] - 1,
+      }));
+    }
+  }
 
   useEffect(() => {
-    if (
-      trafficLightTimer[1] !== 0 &&
-      trafficLightTimer[2] !== 0 &&
-      trafficLightTimer[3] !== 0 &&
-      trafficLightTimer[4] !== 0
-    ) {
+    if (trafficLightTimer[presentActive] !== 0) {
       setTimeout(() => {
-        setTrafficLightTimer({
-          1: trafficLightTimer[1] - 1,
-          2: trafficLightTimer[2] - 1,
-          3: trafficLightTimer[3] - 1,
-          4: trafficLightTimer[4] - 1,
-        });
+        if (
+          trafficLightTimer[presentActive] > 0 &&
+          trafficLightTimer[presentActive] <= 3
+        ) {
+          yellowBlink();
+        } else if (trafficLightTimer[presentActive] > 3) {
+          if (presentActive === 1) {
+            setTrafficLightColor((prev) => ({
+              ...prev,
+              1: greenDic,
+              2: redDic,
+              3: redDic,
+              4: redDic,
+            }));
+            setTrafficLightTimer((prevData) => ({
+              ...prevData,
+              1: trafficLightTimer[1] - 1,
+            }));
+          } else if (presentActive === 2) {
+            setTrafficLightColor((prev) => ({
+              ...prev,
+              2: greenDic,
+              1: redDic,
+              3: redDic,
+              4: redDic,
+            }));
+            setTrafficLightTimer((prevData) => ({
+              ...prevData,
+              2: trafficLightTimer[2] - 1,
+            }));
+          } else if (presentActive === 3) {
+            setTrafficLightColor((prev) => ({
+              ...prev,
+              3: greenDic,
+              2: redDic,
+              1: redDic,
+              4: redDic,
+            }));
+            setTrafficLightTimer((prevData) => ({
+              ...prevData,
+              3: trafficLightTimer[3] - 1,
+            }));
+          } else if (presentActive === 4) {
+            setTrafficLightColor((prev) => ({
+              ...prev,
+              4: greenDic,
+              2: redDic,
+              3: redDic,
+              1: redDic,
+            }));
+            setTrafficLightTimer((prevData) => ({
+              ...prevData,
+              4: trafficLightTimer[4] - 1,
+            }));
+          }
+        }
       }, 1000);
     } else {
       setTrafficLightTimer({
@@ -58,6 +158,8 @@ export default function Home() {
         3: 5,
         4: 5,
       });
+      let nextActive = (presentActive % 4) + 1;
+      if (nextActive) setPresentActive((presentActive % 4) + 1);
     }
   });
 
@@ -151,12 +253,12 @@ export default function Home() {
         <div className="w-1/2 p-4 text-white">
           {imgShow === false ? (
             <Webcam
-              key={videoDevices[0] ? videoDevices[0].deviceId : null}
+              key={videoDevices[1] ? videoDevices[1].deviceId : null}
               audio={false}
               ref={(el) => (webcamRef1.current = el)}
               screenshotFormat="image/jpeg"
               videoConstraints={{
-                deviceId: videoDevices[0] ? videoDevices[0].deviceId : null,
+                deviceId: videoDevices[1] ? videoDevices[1].deviceId : null,
               }}
               style={{
                 width: "74rem",
@@ -179,7 +281,7 @@ export default function Home() {
                   : predicted[1].actualVehicles !== 0 ||
                     predicted.invalidVehicles !== 0
                   ? predicted[1].predictedUrl
-                  : capturedImage[4]
+                  : capturedImage[3]
               }
               alt="1st camera"
             />
@@ -210,101 +312,9 @@ export default function Home() {
         <div className="w-1/2 p-4 text-white">
           {imgShow === false ? (
             <Webcam
-              key={videoDevices[1] ? videoDevices[1].deviceId : null}
-              audio={false}
-              ref={(el) => (webcamRef2.current = el)}
-              screenshotFormat="image/jpeg"
-              videoConstraints={{
-                deviceId: videoDevices[1] ? videoDevices[1].deviceId : null,
-              }}
-              style={{
-                width: "74rem",
-                height: "39rem",
-                paddingLeft: "8rem",
-                paddingRight: "8rem",
-              }}
-            />
-          ) : (
-            <img
-              style={{
-                width: "74rem",
-                height: "39rem",
-                paddingLeft: "8rem",
-                paddingRight: "8rem",
-              }}
-              src={
-                isPredicted === false
-                  ? capturedImage[2]
-                  : predicted[2].actualVehicles !== 0 ||
-                    predicted.invalidVehicles !== 0
-                  ? predicted[2].predictedUrl
-                  : capturedImage[2]
-              }
-              alt="2nd camera"
-            />
-          )}
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <div className="w-1/2 p-4 text-white flex second-second mr-7">
-          <div className="Hello-hello-hello mx-auto my-10">
-            <h1 className="bg-white text-5xl py-3 px-3">
-              {trafficLightTimer[2]}
-            </h1>
-          </div>
-
-          <div className="my-auto m-1 border second-second-second bg-white flex-row justify-center p-1">
-            <div
-              className={`h-7 w-7 ${trafficLightColor[2].red} m-3 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[2].yellow} m-3 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[2].green} m-3 rounded-full`}
-            ></div>
-          </div>
-        </div>
-
-        <div className="w-1/4 p-4">
-          <div className="flex justify-center items-center p-12">
-            <button
-              className="text-white bg-red-500 rounded-xl p-4"
-              onClick={clickButton === "Capture" ? capture : predict}
-            >
-              {clickButton}
-            </button>
-          </div>
-        </div>
-
-        <div className="w-1/2 p-4 flex second-second mr-7">
-          <div className="my-auto m-1 border third-second-second bg-white flex-row justify-center p-1">
-            <div
-              className={`h-7 w-7 ${trafficLightColor[3].red} m-3 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[3].yellow} m-3 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[3].green} m-3 rounded-full`}
-            ></div>
-          </div>
-          <div className="Hello-hello-hello mx-auto my-10">
-            <h1 className="bg-white text-5xl py-3 px-3">
-              {trafficLightTimer[3]}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex justify-between mt-6">
-        <div className="w-1/2 p-4 text-white">
-          {imgShow === false ? (
-            <Webcam
               key={videoDevices[2] ? videoDevices[2].deviceId : null}
               audio={false}
-              ref={(el) => (webcamRef3.current = el)}
+              ref={(el) => (webcamRef2.current = el)}
               screenshotFormat="image/jpeg"
               videoConstraints={{
                 deviceId: videoDevices[2] ? videoDevices[2].deviceId : null,
@@ -332,41 +342,74 @@ export default function Home() {
                   ? predicted[3].predictedUrl
                   : capturedImage[3]
               }
-              alt="3rd camera"
+              alt="2nd camera"
             />
           )}
         </div>
+      </div>
 
-        <div className="w-1/4 p-4 text-white flex-row hello-hello-2 mx-10">
-          <div className="mx-auto m-1 border h-20 w-15 helo-helo-helo-helo bg-white flex p-2">
-            <div
-              className={`h-7 w-7 ${trafficLightColor[4].red} m-2 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[4].yellow} m-2 rounded-full`}
-            ></div>
-            <div
-              className={`h-7 w-7 ${trafficLightColor[4].green} m-2 rounded-full`}
-            ></div>
+      <div className="flex justify-between">
+        <div className="w-1/2 p-4 text-white flex second-second mr-7">
+          <div className="Hello-hello-hello mx-auto my-10">
+            <h1 className="bg-white text-5xl py-3 px-3">
+              {trafficLightTimer[4]}
+            </h1>
           </div>
-          <div className="p-2 hello-hello  mx-4 mt-6">
-            <div className="mx-auto mb-70 Hello-hello-hello">
-              <h1 className="bg-white text-5xl py-3 px-3">
-                {trafficLightTimer[4]}
-              </h1>
-            </div>
+
+          <div className="my-auto m-1 border second-second-second bg-white flex-row justify-center p-1">
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].red} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].yellow} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[4].green} m-3 rounded-full`}
+            ></div>
           </div>
         </div>
 
+        <div className="w-1/4 p-4">
+          <div className="flex justify-center items-center p-12">
+            <button
+              className="text-white bg-red-500 rounded-xl p-4"
+              onClick={clickButton === "Capture" ? capture : predict}
+            >
+              {clickButton}
+            </button>
+          </div>
+        </div>
+
+        <div className="w-1/2 p-4 flex second-second mr-7">
+          <div className="my-auto m-1 border third-second-second bg-white flex-row justify-center p-1">
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].red} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].yellow} m-3 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[2].green} m-3 rounded-full`}
+            ></div>
+          </div>
+          <div className="Hello-hello-hello mx-auto my-10">
+            <h1 className="bg-white text-5xl py-3 px-3">
+              {trafficLightTimer[2]}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-between mt-6">
         <div className="w-1/2 p-4 text-white">
           {imgShow === false ? (
             <Webcam
-              key={videoDevices[3] ? videoDevices[3].deviceId : null}
+              key={videoDevices[1] ? videoDevices[1].deviceId : null}
               audio={false}
-              ref={(el) => (webcamRef4.current = el)}
+              ref={(el) => (webcamRef3.current = el)}
               screenshotFormat="image/jpeg"
               videoConstraints={{
-                deviceId: videoDevices[3] ? videoDevices[3].deviceId : null,
+                deviceId: videoDevices[1] ? videoDevices[1].deviceId : null,
               }}
               style={{
                 width: "74rem",
@@ -385,11 +428,70 @@ export default function Home() {
               }}
               src={
                 isPredicted === false
-                  ? capturedImage[4]
-                  : predicted[4].actualVehicles !== 0 ||
+                  ? capturedImage[2]
+                  : predicted[2].actualVehicles !== 0 ||
                     predicted.invalidVehicles !== 0
-                  ? predicted[4].predictedUrl
-                  : capturedImage[4]
+                  ? predicted[2].predictedUrl
+                  : capturedImage[2]
+              }
+              alt="3rd camera"
+            />
+          )}
+        </div>
+
+        <div className="w-1/4 p-4 text-white flex-row hello-hello-2 mx-10">
+          <div className="mx-auto m-1 border h-20 w-15 helo-helo-helo-helo bg-white flex p-2">
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].red} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].yellow} m-2 rounded-full`}
+            ></div>
+            <div
+              className={`h-7 w-7 ${trafficLightColor[3].green} m-2 rounded-full`}
+            ></div>
+          </div>
+          <div className="p-2 hello-hello  mx-4 mt-6">
+            <div className="mx-auto mb-70 Hello-hello-hello">
+              <h1 className="bg-white text-5xl py-3 px-3">
+                {trafficLightTimer[3]}
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-1/2 p-4 text-white">
+          {imgShow === false ? (
+            <Webcam
+              key={videoDevices[2] ? videoDevices[2].deviceId : null}
+              audio={false}
+              ref={(el) => (webcamRef4.current = el)}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{
+                deviceId: videoDevices[2] ? videoDevices[2].deviceId : null,
+              }}
+              style={{
+                width: "74rem",
+                height: "39rem",
+                paddingLeft: "8rem",
+                paddingRight: "8rem",
+              }}
+            />
+          ) : (
+            <img
+              style={{
+                width: "74rem",
+                height: "39rem",
+                paddingLeft: "8rem",
+                paddingRight: "8rem",
+              }}
+              src={
+                isPredicted === false
+                  ? capturedImage[3]
+                  : predicted[3].actualVehicles !== 0 ||
+                    predicted.invalidVehicles !== 0
+                  ? predicted[3].predictedUrl
+                  : capturedImage[3]
               }
               alt="4th camera"
             />
