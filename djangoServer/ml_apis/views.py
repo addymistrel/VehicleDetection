@@ -25,6 +25,7 @@ def newData(request):
 
 @api_view(['POST'])
 def imagePredict(request):
+    import time
     gotDataDic = json.loads(request.body.decode("utf-8"))
     print(gotDataDic,type(gotDataDic))
     workspace = modelSelector.ModelSelector(1)
